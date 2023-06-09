@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag N Drop Tasks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <style>
+        li{ cursor: grab;}
+    </style>
+</head>
+<body>
+    
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <div class="formContainer">
+                    <form onsubmit="taskFormSubmit(event)">
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="text" name="task" id="task"
+                                 class="form-control"
+                                 placeholder="Type to write a task...">
+                            </div>
+                            <div class="col-1">
+                                <button type="submit" 
+                                        class="btn btn-primary mb-3">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-3 col-xs-12 col-md-3">
+                <div class="card text-bg-secondary mb-3">
+                    <div class="card-header">
+                        <h4>To Work</h4>
+                    </div>
+                    <ul class="list-group list-group-flush" id="toWorkList">
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-12 col-md-3">
+                <div class="card text-bg-secondary mb-3">
+                    <div class="card-header">
+                        <h4>Working</h4>
+                    </div>
+                    <ul class="list-group list-group-flush" id="workingList">
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-12 col-md-3">
+                <div class="card text-bg-secondary mb-3">
+                    <div class="card-header">
+                        <h4>Testing</h4>
+                    </div>
+                    <ul class="list-group list-group-flush" id="testingList">
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xs-12 col-md-3">
+                <div class="card text-bg-secondary mb-3">
+                    <div class="card-header">
+                        <h4>Done</h4>
+                    </div>
+                    <ul class="list-group list-group-flush" id="doneList">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script>
+        let tasks = [];
+        let toWorkList = document.querySelector('#toWorkList');
+
+        let taskFormSubmit = (e) => {
+            e.preventDefault();
+
+            let value = e.target['task'].value;
+            if(!value) return false;
+
+            let task = {
+                id: e.timeStamp,
+                description: value,
+                tag: 'toWork'
+            }
+
+            if(tasks.some(x => x.description == value)){
+                alert('Esta tarefa já existe!');
+                return false;
+            }
+
+            tasks.push(task);
+            addToWork(task);
+            e.target.reset();
+            document.querySelector('#task').focus();
+        }
+        let addToWork = (task) => {
+            let inner = toWorkList.innerHTML;
+            toWorkList.innerHTML = 
+            `<li class="list-group-item" id="${task.id}">${task.description}</li>`
+            toWorkList.innerHTML += inner;
+        }
+        let sortableLists = [toWorkList, workingList, testingList, doneList];
+        sortableLists.map(item => {
+            new Sortable(item, {animation: 150, group: 'tasks'});
+        })
+    </script>
+    
+</body>
+</html>
